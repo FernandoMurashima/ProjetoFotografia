@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User  # tabela auth_user do Django
 
 class Cliente(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cliente')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cliente', null=True, blank=True)
     nome = models.CharField(max_length=255)
     email = models.EmailField(blank=True, null=True)
     telefone = models.CharField(max_length=20, blank=True, null=True)
@@ -39,12 +39,30 @@ class Evento(models.Model):
         ('Cancelado', 'Cancelado'),
     ]
 
+    TIPO_EVENTO_CHOICES = [
+        ('Aniversário', 'Aniversário'),
+        ('Casamento', 'Casamento'),
+        ('Ensaio', 'Ensaio'),
+        ('Batizado', 'Batizado'),
+        ('Outros', 'Outros'),
+    ]
+
     nome = models.CharField(max_length=255)
-    tipo_evento = models.CharField(max_length=100, blank=True, null=True)
+    tipo_evento = models.CharField(max_length=100, choices=TIPO_EVENTO_CHOICES, blank=True, null=True)
     data_evento = models.DateField(blank=True, null=True)
     descricao = models.TextField(blank=True, null=True)
+    quantidade_pessoas = models.IntegerField(blank=True, null=True)
+    duracao_horas = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+
+    logradouro = models.CharField(max_length=255, blank=True, null=True)
+    numero = models.CharField(max_length=50, blank=True, null=True)
+    complemento = models.CharField(max_length=100, blank=True, null=True)
+    bairro = models.CharField(max_length=100, blank=True, null=True)
+    cidade = models.CharField(max_length=100, blank=True, null=True)
+    estado = models.CharField(max_length=100, blank=True, null=True)
+    cep = models.CharField(max_length=20, blank=True, null=True)
+
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='eventos')
-    endereco = models.ForeignKey(Endereco, on_delete=models.SET_NULL, blank=True, null=True, related_name='eventos')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Agendado')
 
     def __str__(self):
@@ -124,3 +142,38 @@ class LogAtividades(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username if self.usuario else 'Sistema'} - {self.acao} - {self.data_hora}"
+    
+class Orcamento(models.Model):
+    FORMA_PAGAMENTO_CHOICES = [
+        ('Dinheiro', 'Dinheiro'),
+        ('Cartão de Crédito', 'Cartão de Crédito'),
+        ('Cartão de Débito', 'Cartão de Débito'),
+        ('Pix', 'Pix'),
+        ('Transferência', 'Transferência'),
+        ('Outro', 'Outro'),
+    ]
+
+    idorcamento = models.BigAutoField(primary_key=True)
+    nome_requisitante = models.CharField(max_length=255)
+    tipo_evento = models.CharField(max_length=100, blank=True, null=True)
+    data_desejada = models.DateField(blank=True, null=True)
+    horario = models.TimeField(blank=True, null=True)
+    quantidade_pessoas = models.IntegerField(blank=True, null=True)
+    duracao_horas = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    descricao = models.TextField(blank=True, null=True)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    forma_pagamento = models.CharField(max_length=50, choices=FORMA_PAGAMENTO_CHOICES, blank=True, null=True)
+    parcelado = models.BooleanField(default=False)
+    celular = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    status = models.CharField(max_length=50, choices=[
+        ('Solicitado', 'Solicitado'),
+        ('Em Análise', 'Em Análise'),
+        ('Aprovado', 'Aprovado'),
+        ('Negado', 'Negado')
+    ], default='Solicitado')
+    data_solicitacao = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Orçamento: {self.nome_requisitante} ({self.status})"
+

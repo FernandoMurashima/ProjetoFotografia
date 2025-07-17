@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import (
     Cliente, RedesSociaisCliente, Endereco, Evento, PagamentoEvento, Galeria,
-    Sorteio, ParticipanteSorteio, Promocao, LogAtividades
+    Sorteio, ParticipanteSorteio, Promocao, LogAtividades, Orcamento,
 )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,10 +31,6 @@ class ClienteSerializer(serializers.ModelSerializer):
             user.email = user_data.get('email', user.email)
             user.save()
         return super().update(instance, validated_data)
-
-
-
-
 
 class RedesSociaisClienteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -80,3 +76,49 @@ class LogAtividadesSerializer(serializers.ModelSerializer):
     class Meta:
         model = LogAtividades
         fields = '__all__'
+
+class AgendarEventoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evento
+        fields = [
+            'nome',
+            'tipo_evento',
+            'data_evento',
+            'descricao',
+            'quantidade_pessoas',
+            'duracao_horas',
+            'logradouro',
+            'numero',
+            'complemento',
+            'bairro',
+            'cidade',
+            'estado',
+            'cep'
+        ]
+
+    def create(self, validated_data):
+        cliente = self.context['request'].user.cliente
+        return Evento.objects.create(cliente=cliente, status='Agendado', **validated_data)
+
+class OrcamentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Orcamento
+        fields = [
+            'idorcamento',
+            'nome_requisitante',
+            'tipo_evento',
+            'data_desejada',
+            'horario',
+            'quantidade_pessoas',
+            'duracao_horas',
+            'valor',
+            'forma_pagamento',
+            'parcelado',
+            'celular',
+            'email',
+            'descricao',
+            'status',
+            'data_solicitacao',
+        ]
+        read_only_fields = ['status', 'data_solicitacao']
+
