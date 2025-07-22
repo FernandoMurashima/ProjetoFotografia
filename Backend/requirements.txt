@@ -4,3 +4,8 @@ markdown==3.5.2
 django-filter==24.1
 django-cors-headers
 mysqlclient==2.2.4
+gunicorn==21.2.0
+python-decouple
+
+
+

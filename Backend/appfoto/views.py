@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
@@ -101,7 +101,7 @@ class LoginClienteView(APIView):
         return Response({'error': 'Usuário ou senha inválidos'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class AgendarEventoView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         print("Recebido POST em /api/eventos/ com dados:", request.data)
@@ -115,7 +115,7 @@ class AgendarEventoView(APIView):
             return Response(serializer.errors, status=400)
 
 class OrcamentoView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = OrcamentoSerializer(data=request.data)

@@ -6,7 +6,7 @@ SECRET_KEY = 'django-insecure-0+u99!##l5abq3(kjimj8&t-pnc0r5@r7jg3t072*zwqm!8w-x
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Aplicativos instalados
 INSTALLED_APPS = [
@@ -63,19 +63,37 @@ TEMPLATES = [
 WSGI_APPLICATION = 'webpro.wsgi.application'
 
 # Banco de dados
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'WebPro',
+#        'USER': 'root',
+#        'PASSWORD': 'ftju7439',
+#        'HOST': 'localhost',
+#        'PORT': '3306',
+#        'OPTIONS': {
+#            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#        }
+#    }
+#}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'WebPro',
+        'NAME': 'railway',
         'USER': 'root',
-        'PASSWORD': 'ftju7439',
-        'HOST': 'localhost',
+        'PASSWORD': 'cQtCBZIPH0ejonbhMtyHHUdTwASYBRd0',
+        'HOST': 'mysql.railway.internal',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }
     }
 }
+
+
+
+
 
 # Validação de senha
 AUTH_PASSWORD_VALIDATORS = [
